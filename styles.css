@@ -1,0 +1,79 @@
+/* FinControl - Custom Styles */
+/* Complementary styles beyond Tailwind CSS */
+
+/* Font family */
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Sidebar mobile toggle */
+.sidebar-open {
+  transform: translateX(0) !important;
+}
+
+/* Chart text */
+.chart-label {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Card hover lift effect */
+.hover\:shadow-md:hover {
+  transform: translateY(-1px);
+}
+
+/* Smooth transitions for cards */
+.bg-white {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+/* Table row hover */
+table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+/* Mobile menu animation */
+#sidebar {
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Focus styles for accessibility */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid #0d9f6e;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Badge category colors - consistent identity */
+.bg-green-50 { --badge-border: #bbf7d0; }
+.bg-orange-50 { --badge-border: #fed7aa; }
+.bg-purple-50 { --badge-border: #e9d5ff; }
+.bg-blue-50 { --badge-border: #bfdbfe; }
+.bg-teal-50 { --badge-border: #99f6e4; }
+
+/* Print styles */
+@media print {
+  aside, header, button { display: none !important; }
+  main { margin: 0; padding: 1rem; }
+  .bg-white { border: 1px solid #e5e7eb; }
+}

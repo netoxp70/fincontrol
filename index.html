@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinControl - Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#e6f7f0',
+              100: '#b3e6d1',
+              200: '#80d4b3',
+              300: '#4dc394',
+              400: '#26b77e',
+              500: '#0d9f6e',
+              600: '#0a7d56',
+              700: '#085c3f',
+              800: '#063d2a',
+              900: '#0b2920',
+              950: '#071a14',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 antialiased">
+
+  <!-- Mobile Header -->
+  <header class="lg:hidden fixed top-0 left-0 right-0 z-50 bg-brand-900 text-white px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <button id="menu-toggle" class="p-1" aria-label="Abrir menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center">
+          <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-.52.07-1.06.07-1.58 0A7.986 7.986 0 014 12c0-4.42 3.58-8 8-8s8 3.58 8 8a7.986 7.986 0 01-7.42 7.93zM12 6c-1.1 0-2 .9-2 2v3.17l-1.41 1.42a.996.996 0 000 1.41c.39.39 1.02.39 1.41 0L12 12V8c0-1.1-.9-2-2-2z"/><text x="9" y="17" font-size="12" fill="white" font-weight="bold">$</text></svg>
+        </div>
+        <span class="font-bold text-lg">FinControl</span>
+      </div>
+    </div>
+    <button class="bg-brand-500 text-white text-sm font-semibold px-3 py-2 rounded-lg">
+      + Nova transação
+    </button>
+  </header>
+
+  <!-- Mobile Overlay -->
+  <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden"></div>
+
+  <div class="flex min-h-screen">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar-mobile fixed lg:static inset-y-0 left-0 z-50 w-64 bg-brand-900 text-white flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out">
+      <!-- Logo -->
+      <div class="px-5 py-6">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center text-xl font-bold">$</div>
+          <div>
+            <h1 class="font-bold text-lg leading-tight">FinControl</h1>
+            <span class="text-xs text-brand-300 uppercase tracking-wider">Sua Fintech Pessoal</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="flex-1 px-3 mt-2">
+        <p class="px-3 text-[11px] font-semibold text-brand-400 uppercase tracking-wider mb-2">Principal</p>
+        <ul class="space-y-1">
+          <li>
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-brand-700/50 text-white font-medium text-sm">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-brand-200 hover:bg-brand-800 hover:text-white text-sm transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+              Transações
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-brand-200 hover:bg-brand-800 hover:text-white text-sm transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+              Metas
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-brand-200 hover:bg-brand-800 hover:text-white text-sm transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              Relatórios
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-brand-200 hover:bg-brand-800 hover:text-white text-sm transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"/></svg>
+              Categorias
+            </a>
+          </li>
+        </ul>
+
+        <p class="px-3 text-[11px] font-semibold text-brand-400 uppercase tracking-wider mt-8 mb-2">Integrações</p>
+        <ul class="space-y-1">
+          <li>
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-brand-200 hover:bg-brand-800 hover:text-white text-sm transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+              Contas bancárias
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-brand-200 hover:bg-brand-800 hover:text-white text-sm transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              Sincronizar
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- User Profile -->
+      <div class="px-4 py-4 border-t border-brand-800">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 bg-brand-500 rounded-full flex items-center justify-center text-sm font-bold">MN</div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium truncate">Milton Neto</p>
+            <p class="text-xs text-brand-400 truncate">milton.neto@fincontrol.com</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 min-w-0 pt-14 lg:pt-0">
+
+      <!-- Top Bar -->
+      <div class="sticky top-0 lg:top-0 z-30 bg-white border-b border-gray-200 px-4 lg:px-8 py-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <h2 class="text-xl lg:text-2xl font-bold text-gray-900">Dashboard</h2>
+            <p class="text-sm text-gray-500">Visão consolidada de outubro/2026</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="relative flex-1 sm:flex-none">
+              <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              <input type="text" placeholder="Buscar transações, metas, contas..." class="w-full sm:w-72 pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent">
+            </div>
+            <button class="hidden lg:flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm px-4 py-2.5 rounded-lg transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              Nova transação
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Content -->
+      <div class="p-4 lg:p-8 space-y-6">
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          <!-- Saldo Total -->
+          <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Saldo Total</span>
+              <div class="w-9 h-9 bg-brand-50 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+            </div>
+            <p class="text-2xl font-bold text-gray-900">R$ 28.475,90</p>
+            <p class="text-xs text-gray-500 mt-1">Em 3 contas conectadas</p>
+            <span class="inline-flex items-center gap-1 mt-2 text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+              +8,5%
+            </span>
+          </div>
+
+          <!-- Receitas -->
+          <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Receitas</span>
+              <div class="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg>
+              </div>
+            </div>
+            <p class="text-2xl font-bold text-gray-900">R$ 14.320,00</p>
+            <p class="text-xs text-gray-500 mt-1">Outubro · 7 entradas</p>
+            <span class="inline-flex items-center gap-1 mt-2 text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+              +12,1%
+            </span>
+          </div>
+
+          <!-- Despesas -->
+          <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Despesas</span>
+              <div class="w-9 h-9 bg-red-50 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6"/></svg>
+              </div>
+            </div>
+            <p class="text-2xl font-bold text-gray-900">R$ 8.946,30</p>
+            <p class="text-xs text-gray-500 mt-1">Outubro · 24 saídas</p>
+            <span class="inline-flex items-center gap-1 mt-2 text-xs font-medium text-red-600 bg-red-50 px-2 py-0.5 rounded-full">
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              -3,2%
+            </span>
+          </div>
+
+          <!-- Economia -->
+          <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Economia</span>
+              <div class="w-9 h-9 bg-amber-50 rounded-lg flex items-center justify-center">
+                <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+              </div>
+            </div>
+            <p class="text-2xl font-bold text-gray-900">R$ 5.373,70</p>
+            <p class="text-xs text-gray-500 mt-1">37,5% das receitas</p>
+            <span class="inline-flex items-center gap-1 mt-2 text-xs font-medium text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+              +R$ 880
+            </span>
+          </div>
+        </div>
+
+        <!-- Chart + Quick Actions -->
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+          <!-- Chart -->
+          <div class="xl:col-span-2 bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-center justify-between mb-6">
+              <div>
+                <h3 class="font-semibold text-gray-900">Evolução financeira</h3>
+                <p class="text-xs text-gray-500 mt-0.5">Receitas vs Despesas · Últimos 6 meses</p>
+              </div>
+              <div class="flex bg-gray-100 rounded-lg p-0.5">
+                <button class="px-3 py-1 text-xs font-medium text-gray-500 rounded-md">3M</button>
+                <button class="px-3 py-1 text-xs font-medium bg-white text-gray-900 rounded-md shadow-sm">6M</button>
+                <button class="px-3 py-1 text-xs font-medium text-gray-500 rounded-md">1A</button>
+              </div>
+            </div>
+
+            <!-- SVG Chart -->
+            <div class="w-full overflow-hidden">
+              <svg viewBox="0 0 600 220" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+                <!-- Grid lines -->
+                <line x1="40" y1="20" x2="580" y2="20" stroke="#f3f4f6" stroke-width="1"/>
+                <line x1="40" y1="60" x2="580" y2="60" stroke="#f3f4f6" stroke-width="1"/>
+                <line x1="40" y1="100" x2="580" y2="100" stroke="#f3f4f6" stroke-width="1"/>
+                <line x1="40" y1="140" x2="580" y2="140" stroke="#f3f4f6" stroke-width="1"/>
+                <line x1="40" y1="180" x2="580" y2="180" stroke="#f3f4f6" stroke-width="1"/>
+
+                <!-- Y-axis labels -->
+                <text x="35" y="24" text-anchor="end" class="chart-label" fill="#9ca3af" font-size="10">15K</text>
+                <text x="35" y="64" text-anchor="end" class="chart-label" fill="#9ca3af" font-size="10">12K</text>
+                <text x="35" y="104" text-anchor="end" class="chart-label" fill="#9ca3af" font-size="10">9K</text>
+                <text x="35" y="144" text-anchor="end" class="chart-label" fill="#9ca3af" font-size="10">6K</text>
+                <text x="35" y="184" text-anchor="end" class="chart-label" fill="#9ca3af" font-size="10">3K</text>
+
+                <!-- X-axis labels -->
+                <text x="130" y="205" text-anchor="middle" class="chart-label" fill="#9ca3af" font-size="10">Mai</text>
+                <text x="220" y="205" text-anchor="middle" class="chart-label" fill="#9ca3af" font-size="10">Jun</text>
+                <text x="310" y="205" text-anchor="middle" class="chart-label" fill="#9ca3af" font-size="10">Jul</text>
+                <text x="400" y="205" text-anchor="middle" class="chart-label" fill="#9ca3af" font-size="10">Ago</text>
+                <text x="490" y="205" text-anchor="middle" class="chart-label" fill="#9ca3af" font-size="10">Set</text>
+                <text x="565" y="205" text-anchor="middle" class="chart-label" fill="#9ca3af" font-size="10">Out</text>
+
+                <!-- Receitas area -->
+                <path d="M130,100 L220,80 L310,90 L400,60 L490,50 L565,30 L565,180 L130,180 Z" fill="url(#greenGrad)" opacity="0.15"/>
+                <!-- Receitas line -->
+                <polyline points="130,100 220,80 310,90 400,60 490,50 565,30" fill="none" stroke="#0d9f6e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- Receitas dots -->
+                <circle cx="130" cy="100" r="4" fill="#0d9f6e"/>
+                <circle cx="220" cy="80" r="4" fill="#0d9f6e"/>
+                <circle cx="310" cy="90" r="4" fill="#0d9f6e"/>
+                <circle cx="400" cy="60" r="4" fill="#0d9f6e"/>
+                <circle cx="490" cy="50" r="4" fill="#0d9f6e"/>
+                <circle cx="565" cy="30" r="4" fill="#0d9f6e"/>
+
+                <!-- Despesas area -->
+                <path d="M130,140 L220,150 L310,135 L400,145 L490,130 L565,120 L565,180 L130,180 Z" fill="url(#redGrad)" opacity="0.1"/>
+                <!-- Despesas line -->
+                <polyline points="130,140 220,150 310,135 400,145 490,130 565,120" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6,4"/>
+                <!-- Despesas dots -->
+                <circle cx="130" cy="140" r="4" fill="#ef4444"/>
+                <circle cx="220" cy="150" r="4" fill="#ef4444"/>
+                <circle cx="310" cy="135" r="4" fill="#ef4444"/>
+                <circle cx="400" cy="145" r="4" fill="#ef4444"/>
+                <circle cx="490" cy="130" r="4" fill="#ef4444"/>
+                <circle cx="565" cy="120" r="4" fill="#ef4444"/>
+
+                <!-- Tooltip -->
+                <rect x="430" y="15" width="100" height="36" rx="6" fill="#0b2920" opacity="0.95"/>
+                <text x="480" y="30" text-anchor="middle" fill="#9ee6c4" font-size="9">OUT</text>
+                <text x="480" y="44" text-anchor="middle" fill="white" font-size="11" font-weight="600">R$ 14.320,00</text>
+
+                <!-- Gradients -->
+                <defs>
+                  <linearGradient id="greenGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#0d9f6e"/>
+                    <stop offset="100%" stop-color="#0d9f6e" stop-opacity="0"/>
+                  </linearGradient>
+                  <linearGradient id="redGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#ef4444"/>
+                    <stop offset="100%" stop-color="#ef4444" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+
+            <!-- Legend -->
+            <div class="flex items-center gap-6 mt-4">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-0.5 bg-brand-500 rounded-full inline-block"></span>
+                <span class="text-xs text-gray-500">Receitas</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-0.5 bg-red-500 rounded-full inline-block border-dashed"></span>
+                <span class="text-xs text-gray-500">Despesas</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column -->
+          <div class="space-y-6">
+            <!-- Quick Actions -->
+            <div class="bg-white rounded-xl border border-gray-200 p-5">
+              <h3 class="font-semibold text-gray-900 mb-1">Atalhos rápidos</h3>
+              <p class="text-xs text-gray-500 mb-4">Ações mais utilizadas</p>
+              <div class="grid grid-cols-2 gap-3">
+                <a href="#" class="flex flex-col items-center gap-2 p-3 rounded-lg border border-gray-100 hover:border-brand-200 hover:bg-brand-50/50 transition-colors group">
+                  <div class="w-10 h-10 bg-brand-50 group-hover:bg-brand-100 rounded-lg flex items-center justify-center transition-colors">
+                    <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                  </div>
+                  <span class="text-xs font-medium text-gray-700">Nova receita</span>
+                </a>
+                <a href="#" class="flex flex-col items-center gap-2 p-3 rounded-lg border border-gray-100 hover:border-red-200 hover:bg-red-50/50 transition-colors group">
+                  <div class="w-10 h-10 bg-red-50 group-hover:bg-red-100 rounded-lg flex items-center justify-center transition-colors">
+                    <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+                  </div>
+                  <span class="text-xs font-medium text-gray-700">Nova despesa</span>
+                </a>
+                <a href="#" class="flex flex-col items-center gap-2 p-3 rounded-lg border border-gray-100 hover:border-blue-200 hover:bg-blue-50/50 transition-colors group">
+                  <div class="w-10 h-10 bg-blue-50 group-hover:bg-blue-100 rounded-lg flex items-center justify-center transition-colors">
+                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                  </div>
+                  <span class="text-xs font-medium text-gray-700">Sincronizar</span>
+                </a>
+                <a href="#" class="flex flex-col items-center gap-2 p-3 rounded-lg border border-gray-100 hover:border-amber-200 hover:bg-amber-50/50 transition-colors group">
+                  <div class="w-10 h-10 bg-amber-50 group-hover:bg-amber-100 rounded-lg flex items-center justify-center transition-colors">
+                    <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                  </div>
+                  <span class="text-xs font-medium text-gray-700">Exportar</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Connected Accounts -->
+            <div class="bg-white rounded-xl border border-gray-200 p-5">
+              <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">Suas Contas</h3>
+              <ul class="space-y-3">
+                <li class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-purple-600 rounded-full flex items-center justify-center text-white text-xs font-bold">NU</div>
+                    <div>
+                      <p class="text-sm font-medium text-gray-900">Nubank</p>
+                      <p class="text-xs text-gray-400">Conta corrente</p>
+                    </div>
+                  </div>
+                  <span class="text-sm font-semibold text-gray-900">R$ 12.460,00</span>
+                </li>
+                <li class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">IT</div>
+                    <div>
+                      <p class="text-sm font-medium text-gray-900">Itaú</p>
+                      <p class="text-xs text-gray-400">Conta corrente</p>
+                    </div>
+                  </div>
+                  <span class="text-sm font-semibold text-gray-900">R$ 9.215,40</span>
+                </li>
+                <li class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-gray-900 rounded-full flex items-center justify-center text-white text-xs font-bold">XP</div>
+                    <div>
+                      <p class="text-sm font-medium text-gray-900">XP Investimentos</p>
+                      <p class="text-xs text-gray-400">Investimentos</p>
+                    </div>
+                  </div>
+                  <span class="text-sm font-semibold text-gray-900">R$ 6.780,50</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Transactions Table -->
+        <div class="bg-white rounded-xl border border-gray-200">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between p-5 border-b border-gray-100">
+            <div>
+              <h3 class="font-semibold text-gray-900">Últimas transações</h3>
+              <p class="text-xs text-gray-500 mt-0.5">Atividade recente nas contas conectadas</p>
+            </div>
+            <div class="flex items-center gap-3 mt-3 sm:mt-0">
+              <button class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+                Filtrar
+              </button>
+              <a href="#" class="text-sm text-brand-500 hover:text-brand-600 font-medium transition-colors">Ver todas →</a>
+            </div>
+          </div>
+
+          <!-- Desktop Table -->
+          <div class="hidden md:block overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  <th class="px-5 py-3">Descrição</th>
+                  <th class="px-5 py-3">Categoria</th>
+                  <th class="px-5 py-3">Conta</th>
+                  <th class="px-5 py-3">Data</th>
+                  <th class="px-5 py-3 text-right">Valor</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-50">
+                <tr class="hover:bg-gray-50/50 transition-colors">
+                  <td class="px-5 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="w-9 h-9 bg-green-50 rounded-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg>
+                      </div>
+                      <div>
+                        <p class="text-sm font-medium text-gray-900">Salário Empresa Ltda</p>
+                        <p class="text-xs text-gray-400">PIB · Salários · Id: #2041</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-5 py-4"><span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700">Salário</span></td>
+                  <td class="px-5 py-4 text-sm text-gray-600">Nubank</td>
+                  <td class="px-5 py-4 text-sm text-gray-500">05 out, 09:14</td>
+                  <td class="px-5 py-4 text-sm font-semibold text-green-600 text-right">+ R$ 8.500,00</td>
+                </tr>
+                <tr class="hover:bg-gray-50/50 transition-colors">
+                  <td class="px-5 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="w-9 h-9 bg-red-50 rounded-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                      </div>
+                      <div>
+                        <p class="text-sm font-medium text-gray-900">Supermercado Pão de Açúcar</p>
+                        <p class="text-xs text-gray-400">Cartão crédito</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-5 py-4"><span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-orange-50 text-orange-700">Alimentação</span></td>
+                  <td class="px-5 py-4 text-sm text-gray-600">Itaú</td>
+                  <td class="px-5 py-4 text-sm text-gray-500">04 out, 18:49</td>
+                  <td class="px-5 py-4 text-sm font-semibold text-red-500 text-right">- R$ 487,30</td>
+                </tr>
+                <tr class="hover:bg-gray-50/50 transition-colors">
+                  <td class="px-5 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="w-9 h-9 bg-purple-50 rounded-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                      </div>
+                      <div>
+                        <p class="text-sm font-medium text-gray-900">Plano Netflix</p>
+                        <p class="text-xs text-gray-400">Assinatura mensal</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-5 py-4"><span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-purple-50 text-purple-700">Assinaturas</span></td>
+                  <td class="px-5 py-4 text-sm text-gray-600">Nubank</td>
+                  <td class="px-5 py-4 text-sm text-gray-500">03 out, 22:00</td>
+                  <td class="px-5 py-4 text-sm font-semibold text-red-500 text-right">- R$ 55,90</td>
+                </tr>
+                <tr class="hover:bg-gray-50/50 transition-colors">
+                  <td class="px-5 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                      </div>
+                      <div>
+                        <p class="text-sm font-medium text-gray-900">Posto Shell · Combustível</p>
+                        <p class="text-xs text-gray-400">Débito automático</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-5 py-4"><span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">Transporte</span></td>
+                  <td class="px-5 py-4 text-sm text-gray-600">Itaú</td>
+                  <td class="px-5 py-4 text-sm text-gray-500">03 out, 14:22</td>
+                  <td class="px-5 py-4 text-sm font-semibold text-red-500 text-right">- R$ 320,00</td>
+                </tr>
+                <tr class="hover:bg-gray-50/50 transition-colors">
+                  <td class="px-5 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="w-9 h-9 bg-green-50 rounded-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                      </div>
+                      <div>
+                        <p class="text-sm font-medium text-gray-900">Freelance Projeto Beta</p>
+                        <p class="text-xs text-gray-400">Transferência · PIX</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-5 py-4"><span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-teal-50 text-teal-700">Freelance</span></td>
+                  <td class="px-5 py-4 text-sm text-gray-600">XP Investimentos</td>
+                  <td class="px-5 py-4 text-sm text-gray-500">01 out, 10:05</td>
+                  <td class="px-5 py-4 text-sm font-semibold text-green-600 text-right">+ R$ 2.400,00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Mobile Cards -->
+          <div class="md:hidden divide-y divide-gray-100">
+            <div class="flex items-center justify-between p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+                  <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-900">Salário Empresa Ltda</p>
+                  <p class="text-xs text-gray-400">05 out · Nubank</p>
+                </div>
+              </div>
+              <span class="text-sm font-semibold text-green-600">+ R$ 8.500,00</span>
+            </div>
+            <div class="flex items-center justify-between p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center">
+                  <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-900">Supermercado Pão de Açúcar</p>
+                  <p class="text-xs text-gray-400">04 out · Itaú</p>
+                </div>
+              </div>
+              <span class="text-sm font-semibold text-red-500">- R$ 487,30</span>
+            </div>
+            <div class="flex items-center justify-between p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
+                  <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-900">Plano Netflix</p>
+                  <p class="text-xs text-gray-400">03 out · Nubank</p>
+                </div>
+              </div>
+              <span class="text-sm font-semibold text-red-500">- R$ 55,90</span>
+            </div>
+            <div class="flex items-center justify-between p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                  <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-900">Posto Shell · Combustível</p>
+                  <p class="text-xs text-gray-400">03 out · Itaú</p>
+                </div>
+              </div>
+              <span class="text-sm font-semibold text-red-500">- R$ 320,00</span>
+            </div>
+            <div class="flex items-center justify-between p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+                  <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-900">Freelance Projeto Beta</p>
+                  <p class="text-xs text-gray-400">01 out · XP Investimentos</p>
+                </div>
+              </div>
+              <span class="text-sm font-semibold text-green-600">+ R$ 2.400,00</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+</body>
+</html>
