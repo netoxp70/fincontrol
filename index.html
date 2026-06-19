@@ -32,34 +32,133 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gray-50 font-sans text-gray-800 antialiased">
+<body class="bg-gray-50 font-sans text-gray-800 antialiased overflow-x-hidden">
 
   <!-- Mobile Header -->
   <header class="lg:hidden fixed top-0 left-0 right-0 z-50 bg-brand-900 text-white px-4 py-3 flex items-center justify-between">
     <div class="flex items-center gap-3">
-      <button id="menu-toggle" class="p-1" aria-label="Abrir menu">
+      <button onclick="toggleSidebar()" class="p-1" aria-label="Abrir menu">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
       </button>
       <div class="flex items-center gap-2">
-        <div class="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center">
-          <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-.52.07-1.06.07-1.58 0A7.986 7.986 0 014 12c0-4.42 3.58-8 8-8s8 3.58 8 8a7.986 7.986 0 01-7.42 7.93zM12 6c-1.1 0-2 .9-2 2v3.17l-1.41 1.42a.996.996 0 000 1.41c.39.39 1.02.39 1.41 0L12 12V8c0-1.1-.9-2-2-2z"/><text x="9" y="17" font-size="12" fill="white" font-weight="bold">$</text></svg>
-        </div>
+        <div class="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center text-sm font-bold">$</div>
         <span class="font-bold text-lg">FinControl</span>
       </div>
     </div>
-    <button class="bg-brand-500 text-white text-sm font-semibold px-3 py-2 rounded-lg">
+    <button onclick="openModal()" class="bg-brand-500 text-white text-sm font-semibold px-3 py-2 rounded-lg">
       + Nova transação
     </button>
   </header>
 
   <!-- Mobile Overlay -->
-  <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden"></div>
+  <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden"></div>
+
+  <!-- Modal Nova Transação -->
+  <div id="transaction-modal" class="fixed inset-0 z-[60] hidden">
+    <div class="absolute inset-0 bg-black/50" onclick="closeModal()"></div>
+    <div class="absolute inset-4 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-full sm:max-w-lg bg-white rounded-2xl shadow-2xl overflow-y-auto max-h-[90vh] modal-content">
+      <div class="flex items-center justify-between p-5 border-b border-gray-100">
+        <h2 class="text-lg font-bold text-gray-900">Nova transação</h2>
+        <button onclick="closeModal()" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors" aria-label="Fechar">
+          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="p-5 space-y-5">
+        <!-- Tipo -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Tipo da transação</label>
+          <div class="flex gap-2">
+            <button type="button" onclick="selectType(this, 'receita')" class="type-btn flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-brand-500 bg-brand-50 text-brand-700 font-medium text-sm transition-all">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg>
+              Receita
+            </button>
+            <button type="button" onclick="selectType(this, 'despesa')" class="type-btn flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-gray-200 text-gray-500 font-medium text-sm transition-all hover:border-gray-300">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6"/></svg>
+              Despesa
+            </button>
+            <button type="button" onclick="selectType(this, 'transferencia')" class="type-btn flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-gray-200 text-gray-500 font-medium text-sm transition-all hover:border-gray-300">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+              Transferência
+            </button>
+          </div>
+        </div>
+
+        <!-- Valor e Data -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Valor *</label>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400 font-medium">R$</span>
+              <input type="text" id="modal-valor" placeholder="0,00" class="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent">
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Data *</label>
+            <input type="date" id="modal-data" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent">
+          </div>
+        </div>
+
+        <!-- Descrição -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Descrição *</label>
+          <input type="text" id="modal-descricao" placeholder="Ex: Salário, Supermercado, Netflix..." class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent">
+        </div>
+
+        <!-- Conta e Categoria -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Conta</label>
+            <select id="modal-conta" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent bg-white">
+              <option value="Nubank">Nubank</option>
+              <option value="Itaú">Itaú</option>
+              <option value="XP Investimentos">XP Investimentos</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Categoria</label>
+            <select id="modal-categoria" class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent bg-white">
+              <option value="Salário">Salário</option>
+              <option value="Alimentação">Alimentação</option>
+              <option value="Transporte">Transporte</option>
+              <option value="Assinaturas">Assinaturas</option>
+              <option value="Freelance">Freelance</option>
+              <option value="Lazer">Lazer</option>
+              <option value="Moradia">Moradia</option>
+              <option value="Outros">Outros</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Observação -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Observação</label>
+          <textarea id="modal-obs" rows="2" placeholder="Observação opcional..." class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent resize-none"></textarea>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center justify-end gap-3 p-5 border-t border-gray-100 bg-gray-50/50 rounded-b-2xl">
+        <button onclick="closeModal()" class="px-5 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-800 transition-colors">Cancelar</button>
+        <button onclick="addTransaction()" class="px-5 py-2.5 text-sm font-semibold text-white bg-brand-500 hover:bg-brand-600 rounded-lg transition-colors flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Registrar transação
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 z-[70] hidden">
+    <div class="flex items-center gap-3 bg-brand-900 text-white px-5 py-3 rounded-xl shadow-lg">
+      <svg class="w-5 h-5 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      <span id="toast-msg" class="text-sm font-medium">Transação registrada com sucesso!</span>
+    </div>
+  </div>
 
   <div class="flex min-h-screen">
 
     <!-- Sidebar -->
-    <aside id="sidebar" class="sidebar-mobile fixed lg:static inset-y-0 left-0 z-50 w-64 bg-brand-900 text-white flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out">
-      <!-- Logo -->
+    <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-64 bg-brand-900 text-white flex flex-col transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out">
       <div class="px-5 py-6">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center text-xl font-bold">$</div>
@@ -70,7 +169,6 @@
         </div>
       </div>
 
-      <!-- Navigation -->
       <nav class="flex-1 px-3 mt-2">
         <p class="px-3 text-[11px] font-semibold text-brand-400 uppercase tracking-wider mb-2">Principal</p>
         <ul class="space-y-1">
@@ -123,7 +221,6 @@
         </ul>
       </nav>
 
-      <!-- User Profile -->
       <div class="px-4 py-4 border-t border-brand-800">
         <div class="flex items-center gap-3">
           <div class="w-9 h-9 bg-brand-500 rounded-full flex items-center justify-center text-sm font-bold">MN</div>
@@ -150,7 +247,7 @@
               <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
               <input type="text" placeholder="Buscar transações, metas, contas..." class="w-full sm:w-72 pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent">
             </div>
-            <button class="hidden lg:flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm px-4 py-2.5 rounded-lg transition-colors">
+            <button onclick="openModal()" class="hidden lg:flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm px-4 py-2.5 rounded-lg transition-colors">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
               Nova transação
             </button>
@@ -163,7 +260,6 @@
 
         <!-- Summary Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          <!-- Saldo Total -->
           <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
             <div class="flex items-center justify-between mb-3">
               <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Saldo Total</span>
@@ -179,7 +275,6 @@
             </span>
           </div>
 
-          <!-- Receitas -->
           <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
             <div class="flex items-center justify-between mb-3">
               <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Receitas</span>
@@ -195,7 +290,6 @@
             </span>
           </div>
 
-          <!-- Despesas -->
           <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
             <div class="flex items-center justify-between mb-3">
               <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Despesas</span>
@@ -211,7 +305,6 @@
             </span>
           </div>
 
-          <!-- Economia -->
           <div class="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
             <div class="flex items-center justify-between mb-3">
               <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Economia</span>
@@ -236,70 +329,40 @@
             <div class="flex items-center justify-between mb-6">
               <div>
                 <h3 class="font-semibold text-gray-900">Evolução financeira</h3>
-                <p class="text-xs text-gray-500 mt-0.5">Receitas vs Despesas · Últimos 6 meses</p>
+                <p class="text-xs text-gray-500 mt-0.5">Receitas vs Despesas · <span id="chart-subtitle">Últimos 6 meses</span></p>
               </div>
               <div class="flex bg-gray-100 rounded-lg p-0.5">
-                <button class="px-3 py-1 text-xs font-medium text-gray-500 rounded-md">3M</button>
-                <button class="px-3 py-1 text-xs font-medium bg-white text-gray-900 rounded-md shadow-sm">6M</button>
-                <button class="px-3 py-1 text-xs font-medium text-gray-500 rounded-md">1A</button>
+                <button onclick="switchChart('3m')" id="btn-3m" class="chart-period-btn px-3 py-1 text-xs font-medium text-gray-500 rounded-md transition-all">3M</button>
+                <button onclick="switchChart('6m')" id="btn-6m" class="chart-period-btn px-3 py-1 text-xs font-medium bg-white text-gray-900 rounded-md shadow-sm transition-all">6M</button>
+                <button onclick="switchChart('1a')" id="btn-1a" class="chart-period-btn px-3 py-1 text-xs font-medium text-gray-500 rounded-md transition-all">1A</button>
               </div>
             </div>
 
-            <!-- SVG Chart -->
             <div class="w-full overflow-hidden">
-              <svg viewBox="0 0 600 220" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
-                <!-- Grid lines -->
+              <svg id="chart-svg" viewBox="0 0 600 220" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
                 <line x1="40" y1="20" x2="580" y2="20" stroke="#f3f4f6" stroke-width="1"/>
                 <line x1="40" y1="60" x2="580" y2="60" stroke="#f3f4f6" stroke-width="1"/>
                 <line x1="40" y1="100" x2="580" y2="100" stroke="#f3f4f6" stroke-width="1"/>
                 <line x1="40" y1="140" x2="580" y2="140" stroke="#f3f4f6" stroke-width="1"/>
                 <line x1="40" y1="180" x2="580" y2="180" stroke="#f3f4f6" stroke-width="1"/>
 
-                <!-- Y-axis labels -->
                 <text x="35" y="24" text-anchor="end" class="chart-label" fill="#9ca3af" font-size="10">15K</text>
                 <text x="35" y="64" text-anchor="end" class="chart-label" fill="#9ca3af" font-size="10">12K</text>
                 <text x="35" y="104" text-anchor="end" class="chart-label" fill="#9ca3af" font-size="10">9K</text>
                 <text x="35" y="144" text-anchor="end" class="chart-label" fill="#9ca3af" font-size="10">6K</text>
                 <text x="35" y="184" text-anchor="end" class="chart-label" fill="#9ca3af" font-size="10">3K</text>
 
-                <!-- X-axis labels -->
-                <text x="130" y="205" text-anchor="middle" class="chart-label" fill="#9ca3af" font-size="10">Mai</text>
-                <text x="220" y="205" text-anchor="middle" class="chart-label" fill="#9ca3af" font-size="10">Jun</text>
-                <text x="310" y="205" text-anchor="middle" class="chart-label" fill="#9ca3af" font-size="10">Jul</text>
-                <text x="400" y="205" text-anchor="middle" class="chart-label" fill="#9ca3af" font-size="10">Ago</text>
-                <text x="490" y="205" text-anchor="middle" class="chart-label" fill="#9ca3af" font-size="10">Set</text>
-                <text x="565" y="205" text-anchor="middle" class="chart-label" fill="#9ca3af" font-size="10">Out</text>
+                <g id="chart-x-labels"></g>
+                <path id="chart-receitas-area" fill="url(#greenGrad)" opacity="0.15"/>
+                <polyline id="chart-receitas-line" fill="none" stroke="#0d9f6e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <g id="chart-receitas-dots"></g>
 
-                <!-- Receitas area -->
-                <path d="M130,100 L220,80 L310,90 L400,60 L490,50 L565,30 L565,180 L130,180 Z" fill="url(#greenGrad)" opacity="0.15"/>
-                <!-- Receitas line -->
-                <polyline points="130,100 220,80 310,90 400,60 490,50 565,30" fill="none" stroke="#0d9f6e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <!-- Receitas dots -->
-                <circle cx="130" cy="100" r="4" fill="#0d9f6e"/>
-                <circle cx="220" cy="80" r="4" fill="#0d9f6e"/>
-                <circle cx="310" cy="90" r="4" fill="#0d9f6e"/>
-                <circle cx="400" cy="60" r="4" fill="#0d9f6e"/>
-                <circle cx="490" cy="50" r="4" fill="#0d9f6e"/>
-                <circle cx="565" cy="30" r="4" fill="#0d9f6e"/>
+                <path id="chart-despesas-area" fill="url(#redGrad)" opacity="0.1"/>
+                <polyline id="chart-despesas-line" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6,4"/>
+                <g id="chart-despesas-dots"></g>
 
-                <!-- Despesas area -->
-                <path d="M130,140 L220,150 L310,135 L400,145 L490,130 L565,120 L565,180 L130,180 Z" fill="url(#redGrad)" opacity="0.1"/>
-                <!-- Despesas line -->
-                <polyline points="130,140 220,150 310,135 400,145 490,130 565,120" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6,4"/>
-                <!-- Despesas dots -->
-                <circle cx="130" cy="140" r="4" fill="#ef4444"/>
-                <circle cx="220" cy="150" r="4" fill="#ef4444"/>
-                <circle cx="310" cy="135" r="4" fill="#ef4444"/>
-                <circle cx="400" cy="145" r="4" fill="#ef4444"/>
-                <circle cx="490" cy="130" r="4" fill="#ef4444"/>
-                <circle cx="565" cy="120" r="4" fill="#ef4444"/>
+                <g id="chart-tooltip"></g>
 
-                <!-- Tooltip -->
-                <rect x="430" y="15" width="100" height="36" rx="6" fill="#0b2920" opacity="0.95"/>
-                <text x="480" y="30" text-anchor="middle" fill="#9ee6c4" font-size="9">OUT</text>
-                <text x="480" y="44" text-anchor="middle" fill="white" font-size="11" font-weight="600">R$ 14.320,00</text>
-
-                <!-- Gradients -->
                 <defs>
                   <linearGradient id="greenGrad" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stop-color="#0d9f6e"/>
@@ -313,14 +376,13 @@
               </svg>
             </div>
 
-            <!-- Legend -->
             <div class="flex items-center gap-6 mt-4">
               <div class="flex items-center gap-2">
                 <span class="w-3 h-0.5 bg-brand-500 rounded-full inline-block"></span>
                 <span class="text-xs text-gray-500">Receitas</span>
               </div>
               <div class="flex items-center gap-2">
-                <span class="w-3 h-0.5 bg-red-500 rounded-full inline-block border-dashed"></span>
+                <span class="w-3 h-0.5 bg-red-500 rounded-full inline-block"></span>
                 <span class="text-xs text-gray-500">Despesas</span>
               </div>
             </div>
@@ -328,18 +390,17 @@
 
           <!-- Right Column -->
           <div class="space-y-6">
-            <!-- Quick Actions -->
             <div class="bg-white rounded-xl border border-gray-200 p-5">
               <h3 class="font-semibold text-gray-900 mb-1">Atalhos rápidos</h3>
               <p class="text-xs text-gray-500 mb-4">Ações mais utilizadas</p>
               <div class="grid grid-cols-2 gap-3">
-                <a href="#" class="flex flex-col items-center gap-2 p-3 rounded-lg border border-gray-100 hover:border-brand-200 hover:bg-brand-50/50 transition-colors group">
+                <a href="#" onclick="openModal(); return false;" class="flex flex-col items-center gap-2 p-3 rounded-lg border border-gray-100 hover:border-brand-200 hover:bg-brand-50/50 transition-colors group">
                   <div class="w-10 h-10 bg-brand-50 group-hover:bg-brand-100 rounded-lg flex items-center justify-center transition-colors">
                     <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                   </div>
                   <span class="text-xs font-medium text-gray-700">Nova receita</span>
                 </a>
-                <a href="#" class="flex flex-col items-center gap-2 p-3 rounded-lg border border-gray-100 hover:border-red-200 hover:bg-red-50/50 transition-colors group">
+                <a href="#" onclick="openModal(); return false;" class="flex flex-col items-center gap-2 p-3 rounded-lg border border-gray-100 hover:border-red-200 hover:bg-red-50/50 transition-colors group">
                   <div class="w-10 h-10 bg-red-50 group-hover:bg-red-100 rounded-lg flex items-center justify-center transition-colors">
                     <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
                   </div>
@@ -360,7 +421,6 @@
               </div>
             </div>
 
-            <!-- Connected Accounts -->
             <div class="bg-white rounded-xl border border-gray-200 p-5">
               <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">Suas Contas</h3>
               <ul class="space-y-3">
@@ -407,17 +467,57 @@
               <p class="text-xs text-gray-500 mt-0.5">Atividade recente nas contas conectadas</p>
             </div>
             <div class="flex items-center gap-3 mt-3 sm:mt-0">
-              <button class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
-                Filtrar
-              </button>
+              <!-- Filter Dropdown -->
+              <div class="relative">
+                <button onclick="toggleFilter()" id="filter-toggle" class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors px-3 py-1.5 rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-200">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+                  Filtrar
+                  <span id="filter-badge" class="hidden ml-1 w-5 h-5 bg-brand-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">1</span>
+                </button>
+                <div id="filter-dropdown" class="hidden absolute right-0 top-full mt-1 w-56 bg-white rounded-xl border border-gray-200 shadow-lg z-20 py-2">
+                  <p class="px-4 py-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Categoria</p>
+                  <button onclick="filterTransactions('todas')" class="filter-option w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center justify-between" data-filter="todas">
+                    Todas
+                    <svg class="w-4 h-4 text-brand-500 check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  </button>
+                  <button onclick="filterTransactions('Salário')" class="filter-option w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center justify-between" data-filter="Salário">
+                    <span class="flex items-center gap-2"><span class="w-2 h-2 bg-green-500 rounded-full"></span>Salário</span>
+                    <svg class="w-4 h-4 text-brand-500 check-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  </button>
+                  <button onclick="filterTransactions('Alimentação')" class="filter-option w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center justify-between" data-filter="Alimentação">
+                    <span class="flex items-center gap-2"><span class="w-2 h-2 bg-orange-500 rounded-full"></span>Alimentação</span>
+                    <svg class="w-4 h-4 text-brand-500 check-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  </button>
+                  <button onclick="filterTransactions('Assinaturas')" class="filter-option w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center justify-between" data-filter="Assinaturas">
+                    <span class="flex items-center gap-2"><span class="w-2 h-2 bg-purple-500 rounded-full"></span>Assinaturas</span>
+                    <svg class="w-4 h-4 text-brand-500 check-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  </button>
+                  <button onclick="filterTransactions('Transporte')" class="filter-option w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center justify-between" data-filter="Transporte">
+                    <span class="flex items-center gap-2"><span class="w-2 h-2 bg-blue-500 rounded-full"></span>Transporte</span>
+                    <svg class="w-4 h-4 text-brand-500 check-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  </button>
+                  <button onclick="filterTransactions('Freelance')" class="filter-option w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center justify-between" data-filter="Freelance">
+                    <span class="flex items-center gap-2"><span class="w-2 h-2 bg-teal-500 rounded-full"></span>Freelance</span>
+                    <svg class="w-4 h-4 text-brand-500 check-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                  </button>
+                  <div class="border-t border-gray-100 mt-2 pt-2 px-4">
+                    <button onclick="filterTransactions('todas')" class="text-xs text-brand-500 hover:text-brand-600 font-medium">Limpar filtro</button>
+                  </div>
+                </div>
+              </div>
               <a href="#" class="text-sm text-brand-500 hover:text-brand-600 font-medium transition-colors">Ver todas →</a>
             </div>
           </div>
 
+          <!-- No results message -->
+          <div id="no-results" class="hidden p-8 text-center">
+            <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <p class="text-sm text-gray-500">Nenhuma transação encontrada para este filtro.</p>
+          </div>
+
           <!-- Desktop Table -->
           <div class="hidden md:block overflow-x-auto">
-            <table class="w-full">
+            <table class="w-full" id="transactions-table">
               <thead>
                 <tr class="text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
                   <th class="px-5 py-3">Descrição</th>
@@ -427,164 +527,387 @@
                   <th class="px-5 py-3 text-right">Valor</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-gray-50">
-                <tr class="hover:bg-gray-50/50 transition-colors">
-                  <td class="px-5 py-4">
-                    <div class="flex items-center gap-3">
-                      <div class="w-9 h-9 bg-green-50 rounded-lg flex items-center justify-center">
-                        <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg>
-                      </div>
-                      <div>
-                        <p class="text-sm font-medium text-gray-900">Salário Empresa Ltda</p>
-                        <p class="text-xs text-gray-400">PIB · Salários · Id: #2041</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-5 py-4"><span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700">Salário</span></td>
-                  <td class="px-5 py-4 text-sm text-gray-600">Nubank</td>
-                  <td class="px-5 py-4 text-sm text-gray-500">05 out, 09:14</td>
-                  <td class="px-5 py-4 text-sm font-semibold text-green-600 text-right">+ R$ 8.500,00</td>
-                </tr>
-                <tr class="hover:bg-gray-50/50 transition-colors">
-                  <td class="px-5 py-4">
-                    <div class="flex items-center gap-3">
-                      <div class="w-9 h-9 bg-red-50 rounded-lg flex items-center justify-center">
-                        <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-                      </div>
-                      <div>
-                        <p class="text-sm font-medium text-gray-900">Supermercado Pão de Açúcar</p>
-                        <p class="text-xs text-gray-400">Cartão crédito</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-5 py-4"><span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-orange-50 text-orange-700">Alimentação</span></td>
-                  <td class="px-5 py-4 text-sm text-gray-600">Itaú</td>
-                  <td class="px-5 py-4 text-sm text-gray-500">04 out, 18:49</td>
-                  <td class="px-5 py-4 text-sm font-semibold text-red-500 text-right">- R$ 487,30</td>
-                </tr>
-                <tr class="hover:bg-gray-50/50 transition-colors">
-                  <td class="px-5 py-4">
-                    <div class="flex items-center gap-3">
-                      <div class="w-9 h-9 bg-purple-50 rounded-lg flex items-center justify-center">
-                        <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                      </div>
-                      <div>
-                        <p class="text-sm font-medium text-gray-900">Plano Netflix</p>
-                        <p class="text-xs text-gray-400">Assinatura mensal</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-5 py-4"><span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-purple-50 text-purple-700">Assinaturas</span></td>
-                  <td class="px-5 py-4 text-sm text-gray-600">Nubank</td>
-                  <td class="px-5 py-4 text-sm text-gray-500">03 out, 22:00</td>
-                  <td class="px-5 py-4 text-sm font-semibold text-red-500 text-right">- R$ 55,90</td>
-                </tr>
-                <tr class="hover:bg-gray-50/50 transition-colors">
-                  <td class="px-5 py-4">
-                    <div class="flex items-center gap-3">
-                      <div class="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center">
-                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
-                      </div>
-                      <div>
-                        <p class="text-sm font-medium text-gray-900">Posto Shell · Combustível</p>
-                        <p class="text-xs text-gray-400">Débito automático</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-5 py-4"><span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">Transporte</span></td>
-                  <td class="px-5 py-4 text-sm text-gray-600">Itaú</td>
-                  <td class="px-5 py-4 text-sm text-gray-500">03 out, 14:22</td>
-                  <td class="px-5 py-4 text-sm font-semibold text-red-500 text-right">- R$ 320,00</td>
-                </tr>
-                <tr class="hover:bg-gray-50/50 transition-colors">
-                  <td class="px-5 py-4">
-                    <div class="flex items-center gap-3">
-                      <div class="w-9 h-9 bg-green-50 rounded-lg flex items-center justify-center">
-                        <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                      </div>
-                      <div>
-                        <p class="text-sm font-medium text-gray-900">Freelance Projeto Beta</p>
-                        <p class="text-xs text-gray-400">Transferência · PIX</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-5 py-4"><span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-teal-50 text-teal-700">Freelance</span></td>
-                  <td class="px-5 py-4 text-sm text-gray-600">XP Investimentos</td>
-                  <td class="px-5 py-4 text-sm text-gray-500">01 out, 10:05</td>
-                  <td class="px-5 py-4 text-sm font-semibold text-green-600 text-right">+ R$ 2.400,00</td>
-                </tr>
+              <tbody class="divide-y divide-gray-50" id="transactions-body">
               </tbody>
             </table>
           </div>
 
           <!-- Mobile Cards -->
-          <div class="md:hidden divide-y divide-gray-100">
-            <div class="flex items-center justify-between p-4">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
-                  <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg>
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-gray-900">Salário Empresa Ltda</p>
-                  <p class="text-xs text-gray-400">05 out · Nubank</p>
-                </div>
-              </div>
-              <span class="text-sm font-semibold text-green-600">+ R$ 8.500,00</span>
-            </div>
-            <div class="flex items-center justify-between p-4">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center">
-                  <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-gray-900">Supermercado Pão de Açúcar</p>
-                  <p class="text-xs text-gray-400">04 out · Itaú</p>
-                </div>
-              </div>
-              <span class="text-sm font-semibold text-red-500">- R$ 487,30</span>
-            </div>
-            <div class="flex items-center justify-between p-4">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
-                  <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-gray-900">Plano Netflix</p>
-                  <p class="text-xs text-gray-400">03 out · Nubank</p>
-                </div>
-              </div>
-              <span class="text-sm font-semibold text-red-500">- R$ 55,90</span>
-            </div>
-            <div class="flex items-center justify-between p-4">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-                  <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-gray-900">Posto Shell · Combustível</p>
-                  <p class="text-xs text-gray-400">03 out · Itaú</p>
-                </div>
-              </div>
-              <span class="text-sm font-semibold text-red-500">- R$ 320,00</span>
-            </div>
-            <div class="flex items-center justify-between p-4">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
-                  <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                </div>
-                <div>
-                  <p class="text-sm font-medium text-gray-900">Freelance Projeto Beta</p>
-                  <p class="text-xs text-gray-400">01 out · XP Investimentos</p>
-                </div>
-              </div>
-              <span class="text-sm font-semibold text-green-600">+ R$ 2.400,00</span>
-            </div>
+          <div class="md:hidden divide-y divide-gray-100" id="transactions-mobile">
           </div>
         </div>
 
       </div>
     </main>
   </div>
+
+  <script>
+    // ========================================
+    // DATA
+    // ========================================
+    var transactions = [
+      { desc: 'Salário Empresa Ltda', sub: 'PIB · Salários · Id: #2041', cat: 'Salário', conta: 'Nubank', data: '05 out, 09:14', valor: 8500, tipo: 'receita', icon: 'salary', color: 'green' },
+      { desc: 'Supermercado Pão de Açúcar', sub: 'Cartão crédito', cat: 'Alimentação', conta: 'Itaú', data: '04 out, 18:49', valor: 487.30, tipo: 'despesa', icon: 'cart', color: 'orange' },
+      { desc: 'Plano Netflix', sub: 'Assinatura mensal', cat: 'Assinaturas', conta: 'Nubank', data: '03 out, 22:00', valor: 55.90, tipo: 'despesa', icon: 'tv', color: 'purple' },
+      { desc: 'Posto Shell · Combustível', sub: 'Débito automático', cat: 'Transporte', conta: 'Itaú', data: '03 out, 14:22', valor: 320, tipo: 'despesa', icon: 'transport', color: 'blue' },
+      { desc: 'Freelance Projeto Beta', sub: 'Transferência · PIX', cat: 'Freelance', conta: 'XP Investimentos', data: '01 out, 10:05', valor: 2400, tipo: 'receita', icon: 'work', color: 'green' }
+    ];
+
+    var icons = {
+      salary: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg>',
+      cart: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>',
+      tv: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>',
+      transport: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>',
+      work: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>',
+      other: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V7m0 10v1"/></svg>'
+    };
+
+    var iconsMobile = {};
+    for (var k in icons) { iconsMobile[k] = icons[k].replace(/w-4 h-4/g, 'w-5 h-5'); }
+
+    var catColors = {
+      'Salário': { bg: 'bg-green-50', text: 'text-green-700', dot: 'bg-green-500', iconColor: 'text-green-500' },
+      'Alimentação': { bg: 'bg-orange-50', text: 'text-orange-700', dot: 'bg-orange-500', iconColor: 'text-orange-500' },
+      'Assinaturas': { bg: 'bg-purple-50', text: 'text-purple-700', dot: 'bg-purple-500', iconColor: 'text-purple-500' },
+      'Transporte': { bg: 'bg-blue-50', text: 'text-blue-700', dot: 'bg-blue-500', iconColor: 'text-blue-500' },
+      'Freelance': { bg: 'bg-teal-50', text: 'text-teal-700', dot: 'bg-teal-500', iconColor: 'text-teal-500' },
+      'Lazer': { bg: 'bg-pink-50', text: 'text-pink-700', dot: 'bg-pink-500', iconColor: 'text-pink-500' },
+      'Moradia': { bg: 'bg-indigo-50', text: 'text-indigo-700', dot: 'bg-indigo-500', iconColor: 'text-indigo-500' },
+      'Outros': { bg: 'bg-gray-50', text: 'text-gray-700', dot: 'bg-gray-500', iconColor: 'text-gray-500' }
+    };
+
+    // ========================================
+    // SIDEBAR
+    // ========================================
+    function toggleSidebar() {
+      var sidebar = document.getElementById('sidebar');
+      var overlay = document.getElementById('sidebar-overlay');
+      sidebar.classList.toggle('-translate-x-full');
+      overlay.classList.toggle('hidden');
+    }
+
+    // ========================================
+    // MODAL NOVA TRANSAÇÃO
+    // ========================================
+    var selectedType = 'receita';
+
+    function openModal() {
+      document.getElementById('transaction-modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      var today = new Date().toISOString().split('T')[0];
+      document.getElementById('modal-data').value = today;
+    }
+
+    function closeModal() {
+      document.getElementById('transaction-modal').classList.add('hidden');
+      document.body.style.overflow = '';
+      document.getElementById('modal-valor').value = '';
+      document.getElementById('modal-descricao').value = '';
+      document.getElementById('modal-obs').value = '';
+    }
+
+    function selectType(btn, type) {
+      selectedType = type;
+      var all = document.querySelectorAll('.type-btn');
+      all.forEach(function(b) {
+        b.className = b.className.replace(/border-brand-500 bg-brand-50 text-brand-700/g, 'border-gray-200 text-gray-500');
+      });
+      btn.className = btn.className.replace(/border-gray-200 text-gray-500/g, 'border-brand-500 bg-brand-50 text-brand-700');
+    }
+
+    function formatCurrency(value) {
+      return 'R$ ' + value.toFixed(2).replace('.', ',').replace(/\d(?=(\d{3})+,)/g, '$&.');
+    }
+
+    function addTransaction() {
+      var valor = document.getElementById('modal-valor').value.replace(/[^\d,]/g, '').replace(',', '.');
+      var desc = document.getElementById('modal-descricao').value.trim();
+      var data = document.getElementById('modal-data').value;
+      var conta = document.getElementById('modal-conta').value;
+      var cat = document.getElementById('modal-categoria').value;
+
+      if (!valor || !desc || !data) {
+        showToast('Preencha todos os campos obrigatórios.');
+        return;
+      }
+
+      var valorNum = parseFloat(valor);
+      if (isNaN(valorNum) || valorNum <= 0) {
+        showToast('Valor inválido.');
+        return;
+      }
+
+      var parts = data.split('-');
+      var meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+      var dataFmt = parts[2] + ' ' + meses[parseInt(parts[1])-1] + ', ' + new Date().getHours().toString().padStart(2,'0') + ':' + new Date().getMinutes().toString().padStart(2,'0');
+
+      var iconKey = 'other';
+      if (cat === 'Salário') iconKey = 'salary';
+      else if (cat === 'Alimentação') iconKey = 'cart';
+      else if (cat === 'Assinaturas') iconKey = 'tv';
+      else if (cat === 'Transporte') iconKey = 'transport';
+      else if (cat === 'Freelance') iconKey = 'work';
+
+      var colorKey = (catColors[cat] || catColors['Outros']);
+
+      transactions.unshift({
+        desc: desc,
+        sub: selectedType === 'receita' ? 'Entrada registrada' : selectedType === 'despesa' ? 'Saída registrada' : 'Transferência registrada',
+        cat: cat,
+        conta: conta,
+        data: dataFmt,
+        valor: valorNum,
+        tipo: selectedType === 'transferencia' ? 'despesa' : selectedType,
+        icon: iconKey,
+        color: colorKey.iconColor.replace('text-','').split('-')[0]
+      });
+
+      closeModal();
+      renderTransactions(currentFilter);
+      showToast('Transação registrada com sucesso!');
+    }
+
+    function showToast(msg) {
+      var toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      toast.classList.remove('hidden');
+      setTimeout(function() { toast.classList.add('hidden'); }, 3000);
+    }
+
+    // ========================================
+    // FILTRO DE TRANSAÇÕES
+    // ========================================
+    var currentFilter = 'todas';
+    var filterOpen = false;
+
+    function toggleFilter() {
+      filterOpen = !filterOpen;
+      document.getElementById('filter-dropdown').classList.toggle('hidden', !filterOpen);
+    }
+
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('#filter-toggle') && !e.target.closest('#filter-dropdown')) {
+        filterOpen = false;
+        document.getElementById('filter-dropdown').classList.add('hidden');
+      }
+    });
+
+    function filterTransactions(cat) {
+      currentFilter = cat;
+      renderTransactions(cat);
+
+      document.querySelectorAll('.filter-option').forEach(function(btn) {
+        var check = btn.querySelector('.check-icon');
+        if (btn.getAttribute('data-filter') === cat) {
+          check.classList.remove('hidden');
+        } else {
+          check.classList.add('hidden');
+        }
+      });
+
+      var badge = document.getElementById('filter-badge');
+      if (cat !== 'todas') {
+        badge.classList.remove('hidden');
+        badge.classList.add('flex');
+      } else {
+        badge.classList.add('hidden');
+        badge.classList.remove('flex');
+      }
+
+      filterOpen = false;
+      document.getElementById('filter-dropdown').classList.add('hidden');
+    }
+
+    function renderTransactions(filter) {
+      var filtered = filter && filter !== 'todas'
+        ? transactions.filter(function(t) { return t.cat === filter; })
+        : transactions;
+
+      var desktopBody = document.getElementById('transactions-body');
+      var mobileBody = document.getElementById('transactions-mobile');
+      var noResults = document.getElementById('no-results');
+
+      if (filtered.length === 0) {
+        noResults.classList.remove('hidden');
+        desktopBody.innerHTML = '';
+        mobileBody.innerHTML = '';
+        return;
+      }
+      noResults.classList.add('hidden');
+
+      var desktopHtml = '';
+      var mobileHtml = '';
+
+      filtered.forEach(function(t) {
+        var cc = catColors[t.cat] || catColors['Outros'];
+        var valorSign = t.tipo === 'receita' ? '+' : '-';
+        var valorColor = t.tipo === 'receita' ? 'text-green-600' : 'text-red-500';
+        var valorStr = valorSign + ' ' + formatCurrency(t.valor);
+        var iconBg = t.tipo === 'receita' ? 'bg-green-50' : cc.bg;
+        var iconColor = t.tipo === 'receita' ? 'text-green-500' : cc.iconColor;
+
+        desktopHtml += '<tr class="hover:bg-gray-50/50 transition-colors tx-row" data-cat="' + t.cat + '">' +
+          '<td class="px-5 py-4"><div class="flex items-center gap-3">' +
+            '<div class="w-9 h-9 ' + iconBg + ' rounded-lg flex items-center justify-center ' + iconColor + '">' + icons[t.icon] + '</div>' +
+            '<div><p class="text-sm font-medium text-gray-900">' + t.desc + '</p><p class="text-xs text-gray-400">' + t.sub + '</p></div>' +
+          '</div></td>' +
+          '<td class="px-5 py-4"><span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ' + cc.bg + ' ' + cc.text + '">' + t.cat + '</span></td>' +
+          '<td class="px-5 py-4 text-sm text-gray-600">' + t.conta + '</td>' +
+          '<td class="px-5 py-4 text-sm text-gray-500">' + t.data + '</td>' +
+          '<td class="px-5 py-4 text-sm font-semibold ' + valorColor + ' text-right">' + valorStr + '</td>' +
+        '</tr>';
+
+        mobileHtml += '<div class="flex items-center justify-between p-4 tx-row-mobile" data-cat="' + t.cat + '">' +
+          '<div class="flex items-center gap-3">' +
+            '<div class="w-10 h-10 ' + iconBg + ' rounded-lg flex items-center justify-center ' + iconColor + '">' + iconsMobile[t.icon] + '</div>' +
+            '<div><p class="text-sm font-medium text-gray-900">' + t.desc + '</p><p class="text-xs text-gray-400">' + t.data.split(',')[0] + ' · ' + t.conta + '</p></div>' +
+          '</div>' +
+          '<span class="text-sm font-semibold ' + valorColor + ' whitespace-nowrap ml-3">' + valorStr + '</span>' +
+        '</div>';
+      });
+
+      desktopBody.innerHTML = desktopHtml;
+      mobileBody.innerHTML = mobileHtml;
+    }
+
+    // ========================================
+    // GRÁFICO EVOLUÇÃO FINANCEIRA
+    // ========================================
+    var monthlyReceitas = {
+      'Nov': 8200, 'Dez': 8800, 'Jan': 9100, 'Fev': 8900, 'Mar': 9300, 'Abr': 9700,
+      'Mai': 9500, 'Jun': 10800, 'Jul': 9900, 'Ago': 12200, 'Set': 13100, 'Out': 14320
+    };
+    var monthlyDespesas = {
+      'Nov': 6800, 'Dez': 7200, 'Jan': 7000, 'Fev': 6900, 'Mar': 7100, 'Abr': 7400,
+      'Mai': 7100, 'Jun': 7600, 'Jul': 7900, 'Ago': 8800, 'Set': 8400, 'Out': 8946
+    };
+
+    function buildAccumulated(labels) {
+      var accR = [], accD = [], sumR = 0, sumD = 0;
+      labels.forEach(function(m) {
+        sumR += monthlyReceitas[m];
+        sumD += monthlyDespesas[m];
+        accR.push(sumR);
+        accD.push(sumD);
+      });
+      return { receitas: accR, despesas: accD, totalR: sumR, totalD: sumD };
+    }
+
+    var labels3m = ['Ago', 'Set', 'Out'];
+    var labels6m = ['Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out'];
+    var labels1a = ['Nov', 'Dez', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out'];
+
+    var acc3m = buildAccumulated(labels3m);
+    var acc6m = buildAccumulated(labels6m);
+    var acc1a = buildAccumulated(labels1a);
+
+    var chartData = {
+      '3m': {
+        labels: labels3m,
+        receitas: acc3m.receitas,
+        despesas: acc3m.despesas,
+        subtitle: 'Últimos 3 meses (acumulado)',
+        tooltipLabel: 'TOTAL 3M',
+        tooltipValue: 'R$ ' + acc3m.totalR.toLocaleString('pt-BR') + ',00'
+      },
+      '6m': {
+        labels: labels6m,
+        receitas: acc6m.receitas,
+        despesas: acc6m.despesas,
+        subtitle: 'Últimos 6 meses (acumulado)',
+        tooltipLabel: 'TOTAL 6M',
+        tooltipValue: 'R$ ' + acc6m.totalR.toLocaleString('pt-BR') + ',00'
+      },
+      '1a': {
+        labels: labels1a,
+        receitas: acc1a.receitas,
+        despesas: acc1a.despesas,
+        subtitle: 'Último ano (acumulado)',
+        tooltipLabel: 'TOTAL 1A',
+        tooltipValue: 'R$ ' + acc1a.totalR.toLocaleString('pt-BR') + ',00'
+      }
+    };
+
+    function switchChart(period) {
+      document.querySelectorAll('.chart-period-btn').forEach(function(btn) {
+        btn.classList.remove('bg-white', 'text-gray-900', 'shadow-sm');
+        btn.classList.add('text-gray-500');
+      });
+      document.getElementById('btn-' + period).classList.add('bg-white', 'text-gray-900', 'shadow-sm');
+      document.getElementById('btn-' + period).classList.remove('text-gray-500');
+
+      var d = chartData[period];
+      document.getElementById('chart-subtitle').textContent = d.subtitle;
+      renderChart(d);
+    }
+
+    function renderChart(data) {
+      var n = data.labels.length;
+      var startX = 80;
+      var endX = 565;
+      var step = n > 1 ? (endX - startX) / (n - 1) : 0;
+
+      var maxVal = 0;
+      data.receitas.forEach(function(v) { if (v > maxVal) maxVal = v; });
+      data.despesas.forEach(function(v) { if (v > maxVal) maxVal = v; });
+      maxVal = Math.ceil(maxVal / 1000) * 1000 + 2000;
+
+      var topY = 20, bottomY = 180;
+      function yPos(val) { return bottomY - ((val / maxVal) * (bottomY - topY)); }
+      function xPos(i) { return startX + i * step; }
+
+      // X labels
+      var xlHtml = '';
+      data.labels.forEach(function(lbl, i) {
+        xlHtml += '<text x="' + xPos(i) + '" y="205" text-anchor="middle" class="chart-label" fill="#9ca3af" font-size="10">' + lbl + '</text>';
+      });
+      document.getElementById('chart-x-labels').innerHTML = xlHtml;
+
+      // Receitas
+      var rPoints = data.receitas.map(function(v, i) { return xPos(i) + ',' + yPos(v); }).join(' ');
+      var rArea = 'M' + xPos(0) + ',' + yPos(data.receitas[0]);
+      data.receitas.forEach(function(v, i) { if (i > 0) rArea += ' L' + xPos(i) + ',' + yPos(v); });
+      rArea += ' L' + xPos(n-1) + ',180 L' + xPos(0) + ',180 Z';
+
+      document.getElementById('chart-receitas-line').setAttribute('points', rPoints);
+      document.getElementById('chart-receitas-area').setAttribute('d', rArea);
+
+      var rDots = '';
+      data.receitas.forEach(function(v, i) {
+        rDots += '<circle cx="' + xPos(i) + '" cy="' + yPos(v) + '" r="4" fill="#0d9f6e"/>';
+      });
+      document.getElementById('chart-receitas-dots').innerHTML = rDots;
+
+      // Despesas
+      var dPoints = data.despesas.map(function(v, i) { return xPos(i) + ',' + yPos(v); }).join(' ');
+      var dArea = 'M' + xPos(0) + ',' + yPos(data.despesas[0]);
+      data.despesas.forEach(function(v, i) { if (i > 0) dArea += ' L' + xPos(i) + ',' + yPos(v); });
+      dArea += ' L' + xPos(n-1) + ',180 L' + xPos(0) + ',180 Z';
+
+      document.getElementById('chart-despesas-line').setAttribute('points', dPoints);
+      document.getElementById('chart-despesas-area').setAttribute('d', dArea);
+
+      var dDots = '';
+      data.despesas.forEach(function(v, i) {
+        dDots += '<circle cx="' + xPos(i) + '" cy="' + yPos(v) + '" r="4" fill="#ef4444"/>';
+      });
+      document.getElementById('chart-despesas-dots').innerHTML = dDots;
+
+      // Tooltip on last point
+      var lastX = xPos(n - 1);
+      var lastY = yPos(data.receitas[n - 1]);
+      var ttHtml = '<rect x="' + (lastX - 50) + '" y="' + (lastY - 30) + '" width="100" height="36" rx="6" fill="#0b2920" opacity="0.95"/>' +
+        '<text x="' + lastX + '" y="' + (lastY - 15) + '" text-anchor="middle" fill="#9ee6c4" font-size="9">' + data.tooltipLabel + '</text>' +
+        '<text x="' + lastX + '" y="' + (lastY - 1) + '" text-anchor="middle" fill="white" font-size="11" font-weight="600">' + data.tooltipValue + '</text>';
+      document.getElementById('chart-tooltip').innerHTML = ttHtml;
+    }
+
+    // ========================================
+    // INIT
+    // ========================================
+    renderTransactions('todas');
+    switchChart('6m');
+  </script>
 
 </body>
 </html>

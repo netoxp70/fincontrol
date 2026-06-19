@@ -1,12 +1,20 @@
 /* FinControl - Custom Styles */
-/* Complementary styles beyond Tailwind CSS */
 
-/* Font family */
-body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+* {
+  box-sizing: border-box;
 }
 
-/* Scrollbar styling */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -25,9 +33,23 @@ body {
   background: #9ca3af;
 }
 
-/* Sidebar mobile toggle */
-.sidebar-open {
-  transform: translateX(0) !important;
+/* Card hover lift */
+.hover\:shadow-md:hover {
+  transform: translateY(-1px);
+}
+
+.bg-white {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+/* Table row transitions */
+table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+/* Sidebar transition */
+#sidebar {
+  transition: transform 0.2s ease-in-out;
 }
 
 /* Chart text */
@@ -35,45 +57,128 @@ body {
   font-family: 'Inter', system-ui, sans-serif;
 }
 
-/* Card hover lift effect */
-.hover\:shadow-md:hover {
-  transform: translateY(-1px);
+/* Modal animation */
+.modal-content {
+  animation: modalSlideUp 0.2s ease-out;
 }
 
-/* Smooth transitions for cards */
-.bg-white {
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
 }
 
-/* Table row hover */
-table tbody tr {
-  transition: background-color 0.15s ease;
+@media (max-width: 639px) {
+  .modal-content {
+    animation: modalSlideUpMobile 0.2s ease-out;
+  }
+
+  @keyframes modalSlideUpMobile {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 
-/* Mobile menu animation */
-#sidebar {
-  transition: transform 0.2s ease-in-out;
+/* Toast animation */
+#toast > div {
+  animation: toastIn 0.3s ease-out;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Filter dropdown animation */
+#filter-dropdown {
+  animation: dropdownIn 0.15s ease-out;
+}
+
+@keyframes dropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Focus styles for accessibility */
 a:focus-visible,
 button:focus-visible,
-input:focus-visible {
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
   outline: 2px solid #0d9f6e;
   outline-offset: 2px;
   border-radius: 4px;
 }
 
-/* Badge category colors - consistent identity */
-.bg-green-50 { --badge-border: #bbf7d0; }
-.bg-orange-50 { --badge-border: #fed7aa; }
-.bg-purple-50 { --badge-border: #e9d5ff; }
-.bg-blue-50 { --badge-border: #bfdbfe; }
-.bg-teal-50 { --badge-border: #99f6e4; }
+/* ==========================================
+   RESPONSIVIDADE MOBILE
+   ========================================== */
+
+/* Garante que imagens e SVGs não estouram o container */
+img, svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Mobile: garantir que main content não vaza */
+main {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Mobile: tipo transação botões empilham em telas muito pequenas */
+@media (max-width: 374px) {
+  .type-btn {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  .type-btn svg {
+    display: none;
+  }
+}
+
+/* Mobile: tabela transações scroll horizontal se necessário */
+@media (max-width: 767px) {
+  table {
+    font-size: 0.8125rem;
+  }
+}
+
+/* Mobile: summary cards texto ajustado */
+@media (max-width: 639px) {
+  .text-2xl {
+    font-size: 1.375rem;
+  }
+}
 
 /* Print styles */
 @media print {
-  aside, header, button { display: none !important; }
+  aside, header, button, #transaction-modal, #toast { display: none !important; }
   main { margin: 0; padding: 1rem; }
   .bg-white { border: 1px solid #e5e7eb; }
 }
